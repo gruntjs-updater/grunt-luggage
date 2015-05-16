@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <link rel="stylesheet" href="{{styleFolder}}/common.css"/>
+    {{#if pageStyle}}
+        <link rel="stylesheet" href="{{styleFolder}}/{{pageStyle}}"/>
+    {{/if}}
+</head>
+<body>
+{{{body}}}
+<script>
+    console.log('{{vars.web}}');
+</script>
+<script src="{{scriptFolder}}/common.js"></script>
+{{#if pageScript}}
+    <script src="{{scriptFolder}}/{{pageScript}}"></script>
+{{/if}}
+</body>
+</html>
