@@ -6,6 +6,7 @@
 ## for example
 
 > tpl section:(test/a.html)
+
 ```html
 <div id="test">
     <img src="{{static}}/images/1.png" alt=""/>
@@ -13,6 +14,7 @@
 ```
 
 > global tpl:(template.hbs)
+
 ```html
 <!doctype html>
 <html>
@@ -29,6 +31,7 @@
 ```
 
 > you can get:(dest/a.html)
+
 ```html
 <!doctype html>
 <html>
@@ -46,7 +49,7 @@
 </html>
 ```
 
-> After doing this, you can transfer the final template to the server, eg. a server side handlebars engine.
-> Use origin templates to render in the browser, render final templates in server side.
-> We call it hybrid render :p
+>After doing this, you can transfer the final template to the server, eg. a server side handlebars engine.\
+ Use origin templates to render in the browser, render final templates in server side.\
+ We call it hybrid render :p
 
