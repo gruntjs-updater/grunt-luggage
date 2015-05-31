@@ -15,23 +15,14 @@ module.exports = function (grunt) {
         luggage: {
             dev: {
                 options: {
-                    vars: {
-                        web: 'webweb'
-                    },
-                    from: {
-                        style: 'test/style',
-                        script: 'test/script',
-                        static: 'test/static'
-                    },
-                    to: {
-                        style: 'tmp/tt/style',
-                        script: 'tmp/script',
-                        static: '/index.php/tmp/t',
-                        html:'tmp/html'
-                    },
                     tpl: 'test/template.hbs'
                 },
-                src:['test/html/*']
+                files:[{
+                    expand:true,
+                    cwd: 'test/',
+                    src:['html/*'],
+                    dest:'dist'
+                }]
             }
         }
     });
@@ -41,6 +32,6 @@ module.exports = function (grunt) {
 
     // Whenever the "test" task is run, first clean the "tmp" dir, then run this
     // plugin's task(s), then test the result.
-    grunt.registerTask('test', ['luggage']);
+    grunt.registerTask('default', ['luggage']);
 
 };

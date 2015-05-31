@@ -7,37 +7,65 @@
  */
 
 'use strict';
+var Q = require('q'),
+    fs = require('fs'),
+    fse = require('fs-extra'),
+    readfile = Q.denodeify(fs.readFile),
+    filestat = Q.denodeify(fs.stat),
+    handlebars = require('handlebars'),
+    path = require('path');
 
 module.exports = function (grunt) {
-
-    var handlebars = require('handlebars'),
-        path = require('path');
     grunt.registerMultiTask('luggage', 'package static resources', function () {
         var options = this.options({vars: {}});
-        var src = options.from,
-            dist = options.to,
-            tpl = grunt.file.read(options.tpl),
-            vars = options.vars;
-        vars.static = dist.static;
+        var cwd = options.cwd || '',
+            vars = options.vars,
+            done = this.async(),
+            taskCount = 0;
         this.files.forEach(function (file) {
-            file.src.forEach(function (srcPath) {
-                grunt.file.expand(srcPath).forEach(function (realFile) {
+
+            var src = file.src,
+                dest = file.dest;
+            // normalize cwd
+            if (cwd[cwd.length - 1] !== '/' && cwd.length !== 0) {
+                cwd += '/';
+            }
+            var cwdLength = cwd.length;
+            // if one src path has cwd, normalize it.
+            var realSrc = [];
+            src = src.map(function (item) {
+                if (item.indexOf(cwd) == 0) {
+                    realSrc.push(item);
+                    return item.slice(cwdLength);
+                } else {
+                    realSrc.push(cwd + item);
+                    return item;
+                }
+            });
+
+            //readBodyTpl
+            realSrc.forEach(function (srcFile, srcFileIndex) {
+                taskCount++;
+                readfile(srcFile).done(function (bodyTpl) {
+                    taskCount--;
                     var tplData = {
-                        body: handlebars.compile(grunt.file.read(realFile))(vars),
-                        vars: vars,
-                        styleFolder: dist.style,
-                        scriptFolder: dist.script
+                        body: bodyTpl.toString(),
+                        vars: vars
                     };
-                    ['style', 'script'].forEach(function (type) {
-                        var fileName = path.basename(realFile,path.extname(realFile));
-                        var pattern = path.join(src[type], fileName) + '*'
-                        var file = grunt.file.expand(pattern)[0];
-                        console.log(file)
-                        if (file) {
-                            tplData['page' + type[0].toUpperCase() + type.slice(1)] = path.basename(file);
-                        }
-                    });
-                    grunt.file.write(path.join(dist.html, path.basename(realFile)), handlebars.compile(tpl)(tplData));
+
+                    readfile(options.tpl).done(function (tpl) {
+                        taskCount++;
+                        fse.outputFile(
+                            dest,
+                            handlebars.compile(tpl.toString())(tplData),
+                            function () {
+                                taskCount--;
+                                if (taskCount == 0) {
+                                    done();
+                                }
+                            }
+                        );
+                    })
                 });
             });
         });
