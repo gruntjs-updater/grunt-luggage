@@ -1,7 +1,7 @@
 {
   "name": "grunt-luggage",
   "description": "package static resources",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/Darkylin/grunt-luggage",
   "author": {
     "name": "darkylin",
@@ -38,7 +38,6 @@
   "dependencies": {
     "fs-extra": "^0.18.4",
     "handlebars": "^3.0.3",
-    "node-luggage": "0.0.2",
     "q": "^1.4.1"
   }
 }
